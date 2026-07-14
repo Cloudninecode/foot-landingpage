@@ -1,6 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-<rect width="512" height="512" rx="116" fill="#1B1A16"/>
-<g transform="translate(20.47999999999999 20.47999999999999) scale(0.92)">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="1024" height="1024">
+<g transform="translate(0 0) scale(1)">
     <clipPath id="fld"><rect x="56" y="126" width="400" height="260" rx="28"/></clipPath>
     <g clip-path="url(#fld)"><rect x="56" y="126" width="33.3" height="260" fill="#C6F24E" opacity="0.13"/><rect x="122.6" y="126" width="33.3" height="260" fill="#C6F24E" opacity="0.13"/><rect x="189.2" y="126" width="33.3" height="260" fill="#C6F24E" opacity="0.13"/><rect x="255.79999999999998" y="126" width="33.3" height="260" fill="#C6F24E" opacity="0.13"/><rect x="322.4" y="126" width="33.3" height="260" fill="#C6F24E" opacity="0.13"/><rect x="389" y="126" width="33.3" height="260" fill="#C6F24E" opacity="0.13"/></g>
     <rect x="56" y="126" width="400" height="260" rx="28" fill="none" stroke="#C6F24E" stroke-width="22"/>
