@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /assinatura/
 
-Sitemap: https://varzeascore.app/sitemap.xml
+Sitemap: https://meia10.com.br/sitemap.xml

@@ -1,6 +1,6 @@
 # foot-landingpage
 
-Site do **VárzeaScore** (`varzeascore.app`): landing de marketing + páginas
+Site do **Meia10** (`meia10.com.br`): landing de marketing + páginas
 legais exigidas pelas lojas (App Store / Google Play).
 
 Estático puro — HTML + CSS, zero build, zero framework. Identidade visual
@@ -19,7 +19,7 @@ extraída do app (`foot-mobile/src/theme`): carvão quente `#1B1A16`, lime
 ## Deploy
 
 GitHub Pages via Actions (`.github/workflows/deploy.yml`) a cada push na
-`main`. Domínio custom no `CNAME` (`varzeascore.app`) — apontar o DNS:
+`main`. Domínio custom no `CNAME` (`meia10.com.br`) — apontar o DNS:
 
 ```
 A     @    185.199.108.153 (+ .109/.110/.111)
@@ -39,7 +39,7 @@ python3 -m http.server 8090
 
 ## Pendências
 
-- Trocar `contato@varzeascore.app` / `privacidade@varzeascore.app` pelos
+- Trocar `contato@meia10.com.br` / `privacidade@meia10.com.br` pelos
   e-mails reais quando existirem.
 - Badges das lojas: linkar quando o app for publicado.
 - Revisão jurídica dos textos legais antes do lançamento público.
