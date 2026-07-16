@@ -53,7 +53,7 @@ a:hover { text-decoration: underline; }
 }
 .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; color: var(--text); }
 .logo:hover { text-decoration: none; }
-.logo svg { width: 30px; height: 30px; }
+.logo svg, .logo img { width: 44px; height: 44px; }
 .nav { display: flex; gap: 28px; align-items: center; }
 .nav a { color: var(--text-secondary); font-weight: 600; font-size: 15px; }
 .nav a:hover { color: var(--text); text-decoration: none; }
