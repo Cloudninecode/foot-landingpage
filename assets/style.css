@@ -355,6 +355,90 @@ section.alt .card { background: rgba(19, 18, 16, 0.55); }
   box-shadow: 0 0 22px rgba(198, 242, 78, 0.4);
 }
 
+/* ── Holograma do jogador (seção #jogador) ──────────────────────────── */
+.holo-stage {
+  position: relative;
+  height: 540px;
+  margin: 4px 0 48px;
+}
+.holo-stage canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; /* canvas é replaced: inset não estica sozinho */
+  cursor: grab;
+  touch-action: pan-y; /* arrasto horizontal gira; scroll vertical segue vivo */
+}
+.holo-stage canvas:active { cursor: grabbing; }
+
+.hud {
+  position: absolute;
+  background: rgba(19, 18, 16, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(198, 242, 78, 0.3);
+  border-radius: 12px;
+  padding: 10px 16px;
+  box-shadow: 0 0 26px rgba(198, 242, 78, 0.1);
+  opacity: 0;
+  pointer-events: none;
+}
+.hud-tl { left: 6%; top: 14%; }
+.hud-tr { right: 6%; top: 22%; }
+.hud-bl { left: 8%; bottom: 24%; }
+.hud-br { right: 8%; bottom: 16%; }
+.hud .hud-label {
+  display: block;
+  font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-muted);
+}
+.hud b {
+  font-size: 22px; font-weight: 800; line-height: 1.2;
+  color: var(--primary);
+  text-shadow: 0 0 18px rgba(198, 242, 78, 0.45);
+  font-variant-numeric: tabular-nums;
+}
+.hud-tr b { font-size: 15px; color: var(--gold); text-shadow: 0 0 16px rgba(216, 185, 74, 0.4); }
+/* Fio de luz ligando o painel à figura. */
+.hud::after {
+  content: '';
+  position: absolute; top: 50%; width: 56px; height: 1px;
+  background: linear-gradient(90deg, rgba(198, 242, 78, 0.55), transparent);
+}
+.hud-tl::after, .hud-bl::after { left: 100%; }
+.hud-tr::after, .hud-br::after { right: 100%; transform: scaleX(-1); }
+
+.holo-caption {
+  position: absolute; left: 0; right: 0; bottom: -22px;
+  text-align: center;
+  color: var(--text-muted); font-size: 13px;
+}
+
+/* Flicker de holograma quando a seção entra na tela. */
+.holo-stage.on .hud { animation: holo-in 0.7s both; }
+.holo-stage.on .hud-tr { animation-delay: 0.15s; }
+.holo-stage.on .hud-bl { animation-delay: 0.3s; }
+.holo-stage.on .hud-br { animation-delay: 0.45s; }
+@keyframes holo-in {
+  0% { opacity: 0; }
+  20% { opacity: 0.9; }
+  32% { opacity: 0.2; }
+  46% { opacity: 1; }
+  58% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .holo-stage .hud { opacity: 1; animation: none !important; }
+}
+
+/* Celular: palco menor, HUD vira grade embaixo do holograma. */
+@media (max-width: 860px) {
+  .holo-stage { height: auto; padding-bottom: 8px; }
+  .holo-stage canvas { position: relative; display: block; height: 340px; width: 100%; }
+  .hud { position: static; pointer-events: auto; }
+  .hud::after { display: none; }
+  .holo-stage.on .hud, .holo-stage .hud { display: inline-block; margin: 6px 8px 0 0; }
+  .holo-caption { position: static; margin-top: 10px; }
+}
+
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 @media (max-width: 860px) { .split { grid-template-columns: 1fr; } }
 .persona { padding: 34px; }

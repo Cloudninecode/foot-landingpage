@@ -220,6 +220,17 @@
         <h2>Para o jogador: cada partida constrói sua reputação</h2>
         <p>Seu perfil é seu cartão de visita no futebol amador. Gols, assistências e títulos ficam registrados pra sempre — e viram Score.</p>
       </div>
+
+      <!-- Holograma: o jogador escaneado virando personagem de game -->
+      <div class="holo-stage" id="holoStage">
+        <canvas id="holoplayer" aria-hidden="true"></canvas>
+        <div class="hud hud-tl"><span class="hud-label">Score</span><b><span data-count="78">0</span></b></div>
+        <div class="hud hud-tr"><span class="hud-label">Tier</span><b>Craque · Ouro</b></div>
+        <div class="hud hud-bl"><span class="hud-label">Gols na temporada</span><b><span data-count="12">0</span></b></div>
+        <div class="hud hud-br"><span class="hud-label">Assistências</span><b><span data-count="5">0</span></b></div>
+        <p class="holo-caption">Seu perfil, escaneado a cada súmula oficial — arrasta pra girar</p>
+      </div>
+
       <div class="cards">
         <div class="card fx"><span class="ico">📈</span><h3>Score estilo game</h3><p>Gol soma, cartão desconta. Suba de tier — de Amador a <strong>Craque da Área</strong> — e apareça no ranking da sua região.</p></div>
         <div class="card fx"><span class="ico">🎉</span><h3>Revelação pós-jogo</h3><p>Súmula fechou? Você recebe na hora: "2 gols ⚽ +18 de Score". A adrenalina do jogo continua no app.</p></div>
@@ -405,6 +416,7 @@
   }
 </script>
 <script src="/assets/worldmap.js" defer></script>
+<script src="/assets/holoplayer.js" defer></script>
 
 </body>
 </html>
