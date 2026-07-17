@@ -1,8 +1,9 @@
 // Holograma do jogador — "scanner de craque" na seção Para o Jogador.
-// v2 (feedback 2026-07-17): wireframe de LINHAS em vez de pontos — anéis de
-// contorno + meridianos, como scanner corporal sci-fi — e anatomia atlética
-// (ombros largos, cintura, quadril estreito, pernas retas) pra matar o
-// efeito "vestido" da v1. Canvas puro, zero libs. Arrastar gira.
+// v3 (feedback 2026-07-17): de volta aos PONTOS (v1) — o Fillipi preferiu —
+// mas com a anatomia atlética da v2: ombros largos, cintura, quadril
+// estreito em V, pernas retas com vão. Pontos com densidade proporcional à
+// superfície e fase girada por anel (nuvem de partículas, sem listras).
+// Canvas puro, zero libs. Arrastar gira; anima só quando visível.
 (() => {
   const canvas = document.getElementById('holoplayer');
   if (!canvas) return;
@@ -11,79 +12,69 @@
   const motionOK = matchMedia('(prefers-reduced-motion: no-preference)').matches;
   const TAU = Math.PI * 2;
 
-  // ── Geometria: partes do corpo como sequências de anéis ──────────────
-  // Cada parte = { rings: [ [{x,y,z}...], ... ] } com nº de pontos IGUAL em
-  // todos os anéis da parte (pra ligar meridianos entre anéis vizinhos).
-  const parts = [];
+  // ── Geometria: nuvem de pontos {x,y,z} (y=0 no chão) ─────────────────
+  const pts = [];
+  const DENSITY = 30; // pontos por unidade de circunferência
 
-  function ring(cx, y, rx, n, squash) {
+  function ring(cx, y, rx, squash, phase) {
     const rz = rx * squash;
-    const out = [];
+    const n = Math.max(6, Math.round(TAU * rx * DENSITY));
     for (let i = 0; i < n; i++) {
-      const t = (i / n) * TAU;
-      out.push({ x: cx + rx * Math.cos(t), y, z: rz * Math.sin(t) });
+      const t = (i / n) * TAU + phase;
+      pts.push({ x: cx + rx * Math.cos(t), y, z: rz * Math.sin(t) });
     }
-    return out;
   }
-  // Parte tubular: perfil = [[y, raio, xCentro?], ...], interpolado.
-  function tube(profile, n, squash, step) {
-    const rings = [];
+  // Tubo: perfil [[y, raio, xCentro?], ...] interpolado em anéis.
+  let ph = 0;
+  function tube(profile, squash, step) {
     for (let i = 0; i < profile.length - 1; i++) {
       const [ya, ra, xa = 0] = profile[i], [yb, rb, xb = 0] = profile[i + 1];
       const steps = Math.max(1, Math.round(Math.abs(yb - ya) / step));
       for (let s = (i === 0 ? 0 : 1); s <= steps; s++) {
         const t = s / steps;
-        rings.push(ring(xa + (xb - xa) * t, ya + (yb - ya) * t, ra + (rb - ra) * t, n, squash));
+        ring(xa + (xb - xa) * t, ya + (yb - ya) * t, ra + (rb - ra) * t, squash, (ph += 0.7));
       }
     }
-    parts.push({ rings });
   }
 
-  // Cabeça: esfera por paralelos (levemente oval).
-  {
-    const rings = [];
-    for (let row = 1; row < 9; row++) {
-      const phi = (row / 9) * Math.PI;
-      rings.push(ring(0, 1.605 + 0.115 * Math.cos(phi), 0.098 * Math.sin(phi), 14, 0.9));
-    }
-    parts.push({ rings });
+  // Cabeça: esfera por paralelos, leve oval.
+  for (let row = 1; row < 10; row++) {
+    const phi = (row / 10) * Math.PI;
+    ring(0, 1.605 + 0.112 * Math.cos(phi), 0.096 * Math.sin(phi), 0.9, (ph += 0.9));
   }
   // Pescoço.
-  tube([[1.47, 0.05], [1.545, 0.045]], 10, 0.9, 0.035);
-  // Tronco atlético: trapézio→ombros LARGOS→peito→cintura→quadril ESTREITO
-  // fechando em V (nada de saia).
+  tube([[1.47, 0.048], [1.55, 0.044]], 0.9, 0.03);
+  // Tronco atlético: ombros largos → peito → cintura → quadril estreito em V.
   tube([
-    [1.47, 0.075],          // base do pescoço
-    [1.445, 0.175],         // ombros/deltoides
-    [1.30, 0.155],          // peito
-    [1.10, 0.098],          // cintura marcada
-    [0.97, 0.112],          // quadril (estreito, masculino)
-    [0.885, 0.075],         // pelve fechando em V
-  ], 18, 0.55, 0.04);
-  // Braços com leve flexão no cotovelo, afastados do corpo (pose de scan).
+    [1.47, 0.07],
+    [1.445, 0.172],  // deltoides
+    [1.30, 0.152],   // peito
+    [1.10, 0.096],   // cintura
+    [0.97, 0.11],    // quadril
+    [0.885, 0.072],  // pelve fechando em V
+  ], 0.55, 0.03);
+  // Braços afastados com leve flexão de cotovelo.
   for (const side of [1, -1]) {
     tube([
-      [1.43, 0.05, side * 0.205],
-      [1.13, 0.041, side * 0.265],  // cotovelo
-      [0.86, 0.03, side * 0.295],   // mão
-    ], 8, 0.85, 0.045);
+      [1.43, 0.048, side * 0.205],
+      [1.13, 0.04, side * 0.265],
+      [0.86, 0.028, side * 0.295],
+    ], 0.85, 0.035);
   }
-  // Pernas RETAS e próximas (vão claro entre elas): coxa→joelho→canela→tornozelo.
+  // Pernas retas e próximas, com joelho e panturrilha.
   for (const side of [1, -1]) {
     tube([
-      [0.92, 0.062, side * 0.072],
-      [0.52, 0.046, side * 0.075],  // joelho
-      [0.30, 0.05, side * 0.076],   // panturrilha
-      [0.06, 0.028, side * 0.074],  // tornozelo
-    ], 10, 0.8, 0.05);
+      [0.92, 0.06, side * 0.072],
+      [0.52, 0.045, side * 0.075],
+      [0.30, 0.048, side * 0.076],
+      [0.06, 0.027, side * 0.074],
+    ], 0.8, 0.038);
     // Pé apontando pra frente.
-    const foot = [];
     for (let s = 0; s <= 2; s++) {
-      const r = ring(side * 0.074, 0.045 - s * 0.012, 0.032 - s * 0.004, 8, 1.1);
-      r.forEach(p => { p.z += 0.05 + s * 0.01; });
-      foot.push(r);
+      const before = pts.length;
+      ring(side * 0.074, 0.042 - s * 0.011, 0.031 - s * 0.004, 1.1, (ph += 0.8));
+      for (let i = before; i < pts.length; i++) pts[i].z += 0.05 + s * 0.012;
     }
-    parts.push({ rings: foot });
   }
 
   // ── Estado / render ───────────────────────────────────────────────────
@@ -103,17 +94,6 @@
     cx = w / 2; cy = h * 0.50;
     S = Math.min(h * 0.48, w * 0.42);
     draw(t0);
-  }
-
-  // Buckets de alpha (8 níveis × 2 cores): 1 stroke por bucket por frame,
-  // em vez de ~1500 — barato até em celular.
-  const LEVELS = 8;
-  const buckets = [];
-  for (let i = 0; i < LEVELS * 2; i++) buckets.push([]);
-
-  function seg(x1, y1, x2, y2, alpha, hot) {
-    const lv = Math.min(LEVELS - 1, Math.max(0, (alpha * LEVELS) | 0));
-    buckets[lv + (hot ? LEVELS : 0)].push(x1, y1, x2, y2);
   }
 
   function draw(now) {
@@ -154,55 +134,31 @@
       if (sc < 0.55) scanY = (sc / 0.55) * 1.8;
     }
 
-    // Projeta e acumula segmentos nos buckets.
-    for (const b of buckets) b.length = 0;
-    for (const part of parts) {
-      const proj = part.rings.map(rg => rg.map(p => {
-        const xr = p.x * cosA + p.z * sinA;
-        const zr = -p.x * sinA + p.z * cosA;
-        const s = 3 / (3 + zr);
-        return [cx + xr * S * s, cy - (p.y - 0.9) * S * s, zr, p.y];
-      }));
-      for (let k = 0; k < proj.length; k++) {
-        const rg = proj[k], n = rg.length;
-        const hotRing = scanY >= 0 && Math.abs(part.rings[k][0].y - scanY) < 0.07;
-        // Anel de contorno (fecha o loop).
-        for (let i = 0; i < n; i++) {
-          const a = rg[i], b = rg[(i + 1) % n];
-          const depth = (0.45 - (a[2] + b[2]) / 2) * 0.9;
-          const alpha = Math.min(0.85, Math.max(0.1, 0.16 + depth * 0.55)) + (hotRing ? 0.4 : 0);
-          seg(a[0], a[1], b[0], b[1], Math.min(1, alpha), hotRing);
-        }
-        // Meridianos: liga este anel ao próximo (a cada 3 pontos, mais leve).
-        if (k + 1 < proj.length && proj[k + 1].length === n) {
-          const nx = proj[k + 1];
-          for (let i = 0; i < n; i += 3) {
-            const a = rg[i], b = nx[i];
-            const depth = (0.45 - (a[2] + b[2]) / 2) * 0.9;
-            seg(a[0], a[1], b[0], b[1], Math.max(0.06, (0.16 + depth * 0.55) * 0.45), false);
-          }
-        }
+    // Corpo: pontos com brilho por profundidade (frente acende).
+    for (const p of pts) {
+      const xr = p.x * cosA + p.z * sinA;
+      const zr = -p.x * sinA + p.z * cosA;
+      const s = 3 / (3 + zr);
+      const sx = cx + xr * S * s, sy = cy - (p.y - 0.9) * S * s;
+      const depth = (0.45 - zr) * 1.2;
+      let a = 0.26 + Math.max(0, Math.min(0.52, depth * 0.5));
+      let r = 1.5 * s;
+      let color = '#c6f24e';
+      if (scanY >= 0 && Math.abs(p.y - scanY) < 0.07) {
+        a = Math.min(1, a + 0.6); r *= 1.7; color = '#eaffb0';
       }
-    }
-    // Desenha os buckets (1 stroke por nível de alpha/cor).
-    ctx.lineWidth = 1;
-    for (let i = 0; i < buckets.length; i++) {
-      const b = buckets[i];
-      if (!b.length) continue;
-      ctx.globalAlpha = ((i % LEVELS) + 1) / LEVELS;
-      ctx.strokeStyle = i < LEVELS ? '#c6f24e' : '#eaffb0';
+      ctx.globalAlpha = a;
+      ctx.fillStyle = color;
       ctx.beginPath();
-      for (let j = 0; j < b.length; j += 4) {
-        ctx.moveTo(b[j], b[j + 1]);
-        ctx.lineTo(b[j + 2], b[j + 3]);
-      }
-      ctx.stroke();
+      ctx.arc(sx, sy, r, 0, TAU);
+      ctx.fill();
     }
     // Linha do scan atravessando a silhueta.
     if (scanY >= 0) {
       const yPix = cy - (scanY - 0.9) * S;
       ctx.globalAlpha = 0.30;
       ctx.strokeStyle = '#eaffb0';
+      ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(cx - 0.5 * S, yPix);
       ctx.lineTo(cx + 0.5 * S, yPix);
