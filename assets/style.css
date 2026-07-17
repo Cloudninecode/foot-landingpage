@@ -355,6 +355,90 @@ section.alt .card { background: rgba(19, 18, 16, 0.55); }
   box-shadow: 0 0 22px rgba(198, 242, 78, 0.4);
 }
 
+/* ── Central de comando do organizador (seção #organizador) ─────────── */
+.cmd {
+  position: relative;
+  background: rgba(15, 14, 12, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(198, 242, 78, 0.22);
+  border-radius: 18px;
+  padding: 20px 22px 26px;
+  margin: 4px 0 64px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35), 0 0 50px rgba(198, 242, 78, 0.05);
+  transition: opacity 0.3s ease;
+}
+.cmd.reset { opacity: 0.25; }
+.cmd #cmdFx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
+.cmd-head {
+  display: flex; align-items: center; gap: 12px;
+  padding-bottom: 14px; margin-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+.cmd-title { font-weight: 800; font-size: 15px; }
+.cmd-sim {
+  font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-muted); border: 1px solid var(--border); border-radius: 999px;
+  padding: 2px 10px;
+}
+.cmd-status { margin-left: auto; font-size: 13px; font-weight: 700; color: var(--text-secondary); }
+.cmd-status.ok { color: var(--primary); text-shadow: 0 0 14px rgba(198, 242, 78, 0.4); }
+
+.cmd-body { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 24px; align-items: start; }
+@media (max-width: 860px) { .cmd-body { grid-template-columns: 1fr; } }
+
+.cmd-roster { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-top: 10px; }
+@media (max-width: 500px) { .cmd-roster { grid-template-columns: repeat(4, 1fr); } }
+.slot {
+  aspect-ratio: 1; border-radius: 10px;
+  border: 1px dashed var(--border-strong);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted); font-weight: 800; font-size: 14px;
+  position: relative;
+  transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+.slot.paid {
+  border: 1px solid rgba(198, 242, 78, 0.5);
+  background: rgba(198, 242, 78, 0.08);
+  color: var(--primary);
+  box-shadow: 0 0 16px rgba(198, 242, 78, 0.18);
+}
+.slot.paid::after {
+  content: '✓';
+  position: absolute; top: 3px; right: 6px;
+  font-size: 10px; color: var(--primary);
+}
+
+.cmd-side { display: grid; gap: 14px; }
+.cmd-money-box, .cmd-payout {
+  background: rgba(36, 34, 32, 0.6);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+.cmd-money-box b, .cmd-payout b {
+  display: block; font-size: 30px; font-weight: 800;
+  color: var(--primary); text-shadow: 0 0 20px rgba(198, 242, 78, 0.35);
+  font-variant-numeric: tabular-nums;
+}
+.cmd-bar {
+  height: 6px; border-radius: 999px; background: var(--surface-high);
+  overflow: hidden; margin: 10px 0 6px;
+}
+.cmd-bar i {
+  display: block; height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--primary), #eaffb0);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+  box-shadow: 0 0 12px rgba(198, 242, 78, 0.5);
+}
+.cmd-count { font-size: 12.5px; color: var(--text-secondary); font-weight: 600; }
+.cmd-payout b { color: var(--gold); text-shadow: 0 0 18px rgba(216, 185, 74, 0.35); }
+.cmd-payout { transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+.cmd-payout.done { border-color: rgba(216, 185, 74, 0.45); box-shadow: 0 0 24px rgba(216, 185, 74, 0.12); }
+.cmd-fee { display: block; font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.cmd .holo-caption { position: static; margin-top: 18px; }
+
 /* ── Holograma do jogador (seção #jogador) ──────────────────────────── */
 .holo-stage {
   position: relative;

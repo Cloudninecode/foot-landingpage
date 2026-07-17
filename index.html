@@ -188,6 +188,37 @@
         <h2>Para o organizador: o dinheiro se resolve sozinho</h2>
         <p>Você cria o campeonato, compartilha o link e acompanha tudo num painel. A plataforma cuida da cobrança, da conferência e do repasse.</p>
       </div>
+
+      <!-- Central de comando: simulação do dia de jogo em loop -->
+      <div class="cmd" id="cmdPanel">
+        <canvas id="cmdFx" aria-hidden="true"></canvas>
+        <div class="cmd-head">
+          <span class="cmd-title">Central do organizador</span>
+          <span class="cmd-sim">simulação</span>
+          <span class="cmd-status" id="cmdStatus">Inscrições abertas</span>
+        </div>
+        <div class="cmd-body">
+          <div class="cmd-roster-wrap">
+            <span class="hud-label">Elenco — vaga R$ 75</span>
+            <div class="cmd-roster" id="cmdRoster"></div>
+          </div>
+          <div class="cmd-side">
+            <div class="cmd-money-box">
+              <span class="hud-label">Arrecadado</span>
+              <b id="cmdMoney">R$ 0</b>
+              <div class="cmd-bar"><i id="cmdBar"></i></div>
+              <span class="cmd-count" id="cmdCount">0/12 vagas pagas</span>
+            </div>
+            <div class="cmd-payout" id="cmdPayout">
+              <span class="hud-label">Repasse → sua chave PIX</span>
+              <b id="cmdPayoutVal">—</b>
+              <span class="cmd-fee" id="cmdFee"></span>
+            </div>
+          </div>
+        </div>
+        <p class="holo-caption">Assim é o seu dia de jogo: cobrança, conferência e repasse — sem você cobrar ninguém</p>
+      </div>
+
       <div class="split">
         <div class="card persona fx">
           <span class="tag">Financeiro</span>
@@ -417,6 +448,7 @@
 </script>
 <script src="/assets/worldmap.js" defer></script>
 <script src="/assets/holoplayer.js" defer></script>
+<script src="/assets/command.js" defer></script>
 
 </body>
 </html>
