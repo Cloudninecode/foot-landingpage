@@ -627,7 +627,6 @@ section.alt .card { background: rgba(19, 18, 16, 0.55); }
 
 /* ── FAQ: terminal de dúvidas ───────────────────────────────────────── */
 .faq-term {
-  max-width: 800px;
   background: rgba(15, 14, 12, 0.72);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
