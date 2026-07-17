@@ -387,14 +387,17 @@ section.alt .card { background: rgba(19, 18, 16, 0.55); }
 .cmd-body { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 24px; align-items: start; }
 @media (max-width: 860px) { .cmd-body { grid-template-columns: 1fr; } }
 
-.cmd-roster { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-top: 10px; }
-@media (max-width: 500px) { .cmd-roster { grid-template-columns: repeat(4, 1fr); } }
+.cmd-roster {
+  display: grid; grid-template-columns: repeat(6, minmax(0, 64px));
+  grid-auto-rows: 48px; gap: 10px; margin-top: 10px;
+}
+@media (max-width: 500px) { .cmd-roster { grid-template-columns: repeat(4, minmax(0, 64px)); } }
 .slot {
-  aspect-ratio: 1; border-radius: 10px;
+  height: 48px; border-radius: 10px;
   border: 1px dashed var(--border-strong);
   display: flex; align-items: center; justify-content: center;
   color: var(--text-muted); font-weight: 800; font-size: 14px;
-  position: relative;
+  position: relative; overflow: hidden;
   transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
 }
 .slot.paid {
