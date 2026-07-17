@@ -13,10 +13,11 @@
     }, { threshold: 0.3 }).observe(steps);
   }
 
-  // ── FAQ: resposta se "descriptografa" ao abrir (1ª vez, ~500ms) ──────
+  // ── FAQ (tira-teima): a resposta "revela" como placar girando ────────
   // O texto real fica no DOM (SEO intacto); o efeito só troca o visual
-  // por meio segundo e devolve o original exato.
-  const GLYPHS = '!<>-_/[]{}—=+*^?#01';
+  // por meio segundo e devolve o original exato. Glifos de PLACAR
+  // (números, ×, –) em vez de código — é VAR, não hacker.
+  const GLYPHS = '0123456789×–:';
   document.querySelectorAll('.faq details').forEach((det) => {
     det.addEventListener('toggle', () => {
       if (!det.open || det.dataset.done || !motionOK) return;
