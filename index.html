@@ -77,6 +77,9 @@
 </head>
 <body>
 
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="progress" aria-hidden="true"></div>
+
 <header class="site-header">
   <div class="wrap">
     <a class="logo" href="/">
@@ -121,26 +124,46 @@
         </div>
       </div>
 
-      <!-- Mockup (CSS puro) do feed do app -->
-      <div class="phone" aria-hidden="true">
-        <div class="notch"></div>
-        <div class="greet">Boa tarde, <b>Linkinn</b>.</div>
-        <div class="score-card">
-          <div class="label">Seu Score</div>
-          <div class="score-row"><span class="score-num">78</span><span class="score-delta">▲ +18</span></div>
-          <div class="score-tier">Craque · Ouro</div>
-        </div>
-        <div class="reveal">
-          <span class="ball">⚽</span>
-          <div>
-            <div class="t">Você fez 2 gols hoje</div>
-            <div class="s">+18 de Score — subiu pro Top 5 da liga</div>
+      <!-- Mockup (CSS puro) do feed do app: holograma com tilt 3D -->
+      <div class="phone-wrap" aria-hidden="true">
+        <div class="phone" id="phone">
+          <div class="notch"></div>
+          <div class="greet">Boa tarde, <b>Linkinn</b>.</div>
+          <div class="score-card">
+            <div class="label">Seu Score</div>
+            <div class="score-row"><span class="score-num" id="scoreNum" data-target="78">0</span><span class="score-delta">▲ +18</span></div>
+            <div class="score-tier">Craque · Ouro</div>
           </div>
+          <div class="reveal">
+            <span class="ball">⚽</span>
+            <div>
+              <div class="t">Você fez 2 gols hoje</div>
+              <div class="s">+18 de Score — subiu pro Top 5 da liga</div>
+            </div>
+          </div>
+          <div class="paid">✓ Pagamento confirmado — você está escalado</div>
         </div>
-        <div class="paid">✓ Pagamento confirmado — você está escalado</div>
       </div>
     </div>
   </section>
+
+  <!-- ── TELÃO DE LED (cenas do app, como no mockup acima) ─────────── -->
+  <div class="ticker" aria-hidden="true">
+    <div class="track">
+      <span>⚽ Gol do Linkinn <b>+12 Score</b></span><span class="sep">◆</span>
+      <span>✓ PIX confirmado — <b>vaga garantida</b></span><span class="sep">◆</span>
+      <span>🏆 Real Várzea <b>3×2</b> Fênix FC</span><span class="sep">◆</span>
+      <span>📋 Súmula fechada — classificação <b>atualizada</b></span><span class="sep">◆</span>
+      <span>📈 Você subiu pro <b>Top 5</b> da liga</span><span class="sep">◆</span>
+      <span>🎯 Assistência do Rafa <b>+6 Score</b></span><span class="sep">◆</span>
+      <span>⚽ Gol do Linkinn <b>+12 Score</b></span><span class="sep">◆</span>
+      <span>✓ PIX confirmado — <b>vaga garantida</b></span><span class="sep">◆</span>
+      <span>🏆 Real Várzea <b>3×2</b> Fênix FC</span><span class="sep">◆</span>
+      <span>📋 Súmula fechada — classificação <b>atualizada</b></span><span class="sep">◆</span>
+      <span>📈 Você subiu pro <b>Top 5</b> da liga</span><span class="sep">◆</span>
+      <span>🎯 Assistência do Rafa <b>+6 Score</b></span><span class="sep">◆</span>
+    </div>
+  </div>
 
   <!-- ── A DOR ────────────────────────────────────────────────────── -->
   <section class="alt">
@@ -318,14 +341,66 @@
 </footer>
 
 <script>
-  // Reveal suave ao rolar; sem efeito pra quem prefere reduzir movimento.
-  if (matchMedia('(prefers-reduced-motion: no-preference)').matches && 'IntersectionObserver' in window) {
+  // Efeitos "estádio do futuro" — todos degradam pra estático com
+  // prefers-reduced-motion, e nada aqui é obrigatório pra ler a página.
+  const motionOK = matchMedia('(prefers-reduced-motion: no-preference)').matches;
+
+  // Reveal suave ao rolar.
+  if (motionOK && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
       for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
     }, { rootMargin: '0px 0px -8% 0px' });
     document.querySelectorAll('.fx').forEach((el) => io.observe(el));
   } else {
     document.querySelectorAll('.fx').forEach((el) => el.classList.add('in'));
+  }
+
+  // Barra de progresso da leitura + header aceso ao rolar.
+  const bar = document.querySelector('.progress');
+  const header = document.querySelector('.site-header');
+  addEventListener('scroll', () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    if (bar && max > 0) bar.style.transform = 'scaleX(' + (scrollY / max) + ')';
+    header.classList.toggle('scrolled', scrollY > 8);
+  }, { passive: true });
+
+  // Holofote dos cards: o brilho segue o cursor (variáveis --mx/--my).
+  document.querySelectorAll('.card').forEach((card) => {
+    card.addEventListener('pointermove', (e) => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    });
+  });
+
+  // Tilt 3D do celular (desktop com mouse; no touch fica só o float).
+  const phone = document.getElementById('phone');
+  if (phone && motionOK && matchMedia('(pointer: fine)').matches) {
+    const zone = phone.closest('.wrap');
+    zone.addEventListener('pointermove', (e) => {
+      const r = phone.getBoundingClientRect();
+      const dx = (e.clientX - (r.left + r.width / 2)) / r.width;
+      const dy = (e.clientY - (r.top + r.height / 2)) / r.height;
+      phone.style.transform = 'rotateY(' + (dx * 10) + 'deg) rotateX(' + (dy * -8) + 'deg)';
+    });
+    zone.addEventListener('pointerleave', () => { phone.style.transform = ''; });
+  }
+
+  // Score conta de 0 até o alvo quando entra na tela.
+  const num = document.getElementById('scoreNum');
+  if (num) {
+    const target = +num.dataset.target;
+    if (!motionOK || !('IntersectionObserver' in window)) { num.textContent = target; }
+    else new IntersectionObserver((entries, obs) => {
+      if (!entries[0].isIntersecting) return;
+      obs.disconnect();
+      const t0 = performance.now(), dur = 1400;
+      (function tick(t) {
+        const p = Math.min((t - t0) / dur, 1);
+        num.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(tick);
+      })(t0);
+    }).observe(num);
   }
 </script>
 
