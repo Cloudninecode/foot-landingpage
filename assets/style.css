@@ -75,6 +75,35 @@ a:hover { text-decoration: underline; }
 @keyframes drift-b { to { transform: translate(-70px, -90px) scale(1.1); } }
 @keyframes drift-c { to { transform: translate(60px, -60px); } }
 
+/* Holofotes de estádio: feixes diagonais varrem a página de tempos em
+   tempos (a maior parte do ciclo é escuridão — sutil de propósito). */
+.aurora .beam {
+  position: fixed; top: -30vh; left: -28vw;
+  width: 22vw; height: 170vh;
+  background: linear-gradient(90deg, transparent, rgba(198, 242, 78, 0.055), transparent);
+  transform: rotate(16deg);
+  filter: blur(18px);
+  opacity: 0;
+  animation: beam-sweep 21s linear infinite;
+  will-change: transform, opacity;
+}
+.aurora .beam.b2 {
+  background: linear-gradient(90deg, transparent, rgba(255, 106, 44, 0.04), transparent);
+  transform: rotate(-14deg);
+  animation-delay: 10s;
+  animation-duration: 27s;
+}
+@keyframes beam-sweep {
+  0%   { transform: translateX(0) rotate(16deg); opacity: 0; }
+  4%   { opacity: 1; }
+  22%  { opacity: 1; }
+  27%  { transform: translateX(165vw) rotate(16deg); opacity: 0; }
+  100% { transform: translateX(165vw) rotate(16deg); opacity: 0; }
+}
+@media (max-width: 860px), (prefers-reduced-motion: reduce) {
+  .aurora .beam { display: none; }
+}
+
 body::before {
   /* Grade de campo em perspectiva, sumindo no horizonte. */
   content: '';
@@ -538,6 +567,41 @@ section.alt .card { background: rgba(19, 18, 16, 0.55); }
 .persona li { display: flex; gap: 10px; color: var(--text-secondary); font-size: 15.5px; }
 .persona li::before { content: '✓'; color: var(--primary); font-weight: 800; }
 
+/* ── Como funciona: linha de dados 1→2→3 ────────────────────────────── */
+.steps { position: relative; }
+.steps::after {
+  /* O pulso que viaja pelos passos. */
+  content: '';
+  position: absolute; z-index: 2; top: 40px; left: 2%;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: #eaffb0;
+  box-shadow: 0 0 16px 5px rgba(198, 242, 78, 0.55);
+  opacity: 0;
+  pointer-events: none;
+}
+.steps.run::after { animation: step-run 6s linear infinite; }
+@keyframes step-run {
+  0%   { left: 3%;  opacity: 0; }
+  5%   { opacity: 1; }
+  16%  { left: 12%; }
+  38%  { left: 45%; }
+  70%  { left: 79%; }
+  92%  { left: 96%; opacity: 1; }
+  100% { left: 96%; opacity: 0; }
+}
+/* Cada passo acende quando o pulso passa (delays casados com o trajeto). */
+.steps.run .card { animation: step-glow 6s ease-in-out infinite; }
+.steps.run .card:nth-child(2) { animation-delay: 2s; }
+.steps.run .card:nth-child(3) { animation-delay: 4s; }
+@keyframes step-glow {
+  0%, 24%, 100% { border-color: var(--border); box-shadow: none; }
+  10% { border-color: rgba(198, 242, 78, 0.5); box-shadow: 0 0 30px rgba(198, 242, 78, 0.12); }
+}
+@media (max-width: 860px), (prefers-reduced-motion: reduce) {
+  .steps::after { display: none; }
+  .steps.run .card { animation: none; }
+}
+
 /* ── FAQ ────────────────────────────────────────────────────────────── */
 .faq { max-width: 760px; }
 .faq details {
@@ -557,8 +621,13 @@ section.alt .card { background: rgba(19, 18, 16, 0.55); }
 /* ── CTA final: borda viva ──────────────────────────────────────────── */
 @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
 .cta-final { text-align: center; }
+.cta-final #ctaFx {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; border-radius: inherit;
+}
+.cta-final .box h2, .cta-final .box p, .cta-final .box .btn { position: relative; z-index: 1; }
 .cta-final .box {
-  position: relative;
+  position: relative; overflow: hidden;
   border: 1px solid transparent;
   border-radius: 24px;
   padding: 56px 32px;
@@ -657,3 +726,53 @@ section.alt .card { background: rgba(19, 18, 16, 0.55); }
 .status-page .big { font-size: 64px; margin-bottom: 18px; }
 .status-page h1 { font-size: 30px; margin-bottom: 12px; }
 .status-page p { color: var(--text-secondary); max-width: 30em; margin-bottom: 28px; }
+
+/* 404 holográfico: o jogador com sinal ruim (glitch + estática). */
+.holo-404 {
+  height: 340px; width: min(440px, 92vw);
+  margin: 0 auto 4px; position: relative;
+}
+.holo-404::before {
+  /* Fatia de interferência que pula de posição. */
+  content: '';
+  position: absolute; left: 0; right: 0; height: 12px; top: 30%;
+  background: rgba(198, 242, 78, 0.08);
+  animation: g-slice 3.2s steps(1) infinite;
+  pointer-events: none; z-index: 2;
+}
+.holo-404::after {
+  /* Scanlines + flicker de sinal fraco. */
+  content: '';
+  position: absolute; inset: 0; pointer-events: none; z-index: 2;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.16) 0 2px, transparent 2px 5px);
+  animation: g-flick 4s steps(2) infinite;
+}
+@keyframes g-slice {
+  0% { top: 30%; opacity: 1; } 18% { top: 62%; } 34% { top: 14%; opacity: 0; }
+  52% { top: 78%; opacity: 1; } 70% { top: 44%; } 86% { top: 22%; opacity: 0; }
+}
+@keyframes g-flick { 0%, 78% { opacity: 1; } 82% { opacity: 0.55; } 86%, 100% { opacity: 1; } }
+
+.g-title { position: relative; font-size: clamp(26px, 5vw, 38px); }
+.g-title::before, .g-title::after {
+  content: attr(data-text);
+  position: absolute; inset: 0; opacity: 0.65; pointer-events: none;
+}
+.g-title::before { color: var(--primary); animation: g-shift-a 2.6s steps(1) infinite; }
+.g-title::after { color: var(--accent); animation: g-shift-b 2.6s steps(1) infinite; }
+@keyframes g-shift-a {
+  0%, 88% { transform: none; clip-path: inset(0 0 100% 0); }
+  90% { transform: translate(-3px, 1px); clip-path: inset(12% 0 55% 0); }
+  94% { transform: translate(2px, -1px); clip-path: inset(60% 0 8% 0); }
+  98% { transform: none; clip-path: inset(0 0 100% 0); }
+}
+@keyframes g-shift-b {
+  0%, 89% { transform: none; clip-path: inset(0 0 100% 0); }
+  91% { transform: translate(3px, -1px); clip-path: inset(40% 0 30% 0); }
+  95% { transform: translate(-2px, 2px); clip-path: inset(5% 0 75% 0); }
+  99% { transform: none; clip-path: inset(0 0 100% 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .holo-404::before, .holo-404::after { animation: none; }
+  .g-title::before, .g-title::after { display: none; }
+}

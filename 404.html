@@ -14,11 +14,16 @@
 <body>
 
 <main class="status-page">
-  <div class="big">🥅</div>
-  <h1>Essa bola saiu pela linha de fundo</h1>
-  <p>A página que você procura não existe (ou foi pro tiro de meta).</p>
-  <a class="btn" href="/">Voltar pro início</a>
+  <!-- O jogador holográfico com sinal ruim: glitch + estática por cima. -->
+  <div class="holo-stage holo-404">
+    <canvas id="holoplayer" aria-hidden="true"></canvas>
+  </div>
+  <h1 class="g-title" data-text="404 — jogada não encontrada">404 — jogada não encontrada</h1>
+  <p>Essa bola saiu pela linha de fundo. O VAR revisou o lance e essa página não existe mesmo.</p>
+  <a class="btn" href="/">Voltar pro campo</a>
 </main>
+
+<script src="/assets/holoplayer.js" defer></script>
 
 </body>
 </html>
