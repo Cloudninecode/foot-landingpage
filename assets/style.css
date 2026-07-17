@@ -625,21 +625,64 @@ section.alt .card { background: rgba(19, 18, 16, 0.55); }
   .steps.run .card { animation: none; }
 }
 
-/* ── FAQ ────────────────────────────────────────────────────────────── */
-.faq { max-width: 760px; }
+/* ── FAQ: terminal de dúvidas ───────────────────────────────────────── */
+.faq-term {
+  max-width: 800px;
+  background: rgba(15, 14, 12, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(198, 242, 78, 0.2);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3), 0 0 44px rgba(198, 242, 78, 0.05);
+}
+.term-bar {
+  display: flex; align-items: center; gap: 7px;
+  padding: 11px 16px;
+  background: rgba(36, 34, 32, 0.7);
+  border-bottom: 1px solid var(--border);
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-muted);
+}
+.term-bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--surface-high); }
+.term-bar i:nth-child(1) { background: rgba(229, 72, 77, 0.55); }
+.term-bar i:nth-child(2) { background: rgba(216, 185, 74, 0.55); }
+.term-bar i:nth-child(3) { background: rgba(198, 242, 78, 0.55); }
+.term-bar span { margin-left: 8px; }
+.term-cursor { margin-left: auto; color: var(--primary); animation: cursor-blink 1.1s steps(1) infinite; }
+@keyframes cursor-blink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .term-cursor { animation: none; } }
+
+.faq { padding: 6px 22px 10px; }
 .faq details {
   border-bottom: 1px solid var(--border);
-  padding: 20px 0;
-  transition: background 0.2s ease;
+  padding: 18px 0;
 }
+.faq details:last-child { border-bottom: none; }
 .faq summary {
   cursor: pointer; font-weight: 700; font-size: 17px;
-  list-style: none; display: flex; justify-content: space-between; gap: 16px;
+  list-style: none; display: flex; align-items: baseline; gap: 12px;
 }
 .faq summary::-webkit-details-marker { display: none; }
-.faq summary::after { content: '+'; color: var(--primary); font-weight: 800; font-size: 20px; transition: transform 0.25s ease; }
-.faq details[open] summary::after { content: '+'; transform: rotate(45deg); }
-.faq details p { margin-top: 12px; color: var(--text-secondary); font-size: 15.5px; }
+.faq summary::before {
+  content: '>';
+  color: var(--text-muted); font-weight: 800;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+.faq details[open] summary::before,
+.faq summary:hover::before { color: var(--primary); text-shadow: 0 0 12px rgba(198, 242, 78, 0.6); }
+.faq summary::after {
+  content: '+'; margin-left: auto;
+  color: var(--primary); font-weight: 800; font-size: 20px;
+  transition: transform 0.25s ease;
+}
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq details p {
+  margin: 12px 0 0 22px;
+  color: var(--text-secondary); font-size: 15.5px;
+  border-left: 2px solid rgba(198, 242, 78, 0.25);
+  padding-left: 14px;
+}
 
 /* ── CTA final: borda viva ──────────────────────────────────────────── */
 @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }

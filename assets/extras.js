@@ -13,6 +13,32 @@
     }, { threshold: 0.3 }).observe(steps);
   }
 
+  // ── FAQ: resposta se "descriptografa" ao abrir (1ª vez, ~500ms) ──────
+  // O texto real fica no DOM (SEO intacto); o efeito só troca o visual
+  // por meio segundo e devolve o original exato.
+  const GLYPHS = '!<>-_/[]{}—=+*^?#01';
+  document.querySelectorAll('.faq details').forEach((det) => {
+    det.addEventListener('toggle', () => {
+      if (!det.open || det.dataset.done || !motionOK) return;
+      det.dataset.done = '1';
+      const p = det.querySelector('p');
+      if (!p) return;
+      const original = p.textContent;
+      const t0 = performance.now(), dur = 520;
+      (function step(t) {
+        const prog = Math.min((t - t0) / dur, 1);
+        const solved = Math.floor(original.length * prog);
+        let out = original.slice(0, solved);
+        for (let i = solved; i < Math.min(solved + 14, original.length); i++) {
+          out += original[i] === ' ' ? ' ' : GLYPHS[(Math.random() * GLYPHS.length) | 0];
+        }
+        p.textContent = out;
+        if (prog < 1) requestAnimationFrame(step);
+        else p.textContent = original;
+      })(t0);
+    });
+  });
+
   // ── CTA final: o botão atrai partículas ──────────────────────────────
   const box = document.querySelector('.cta-final .box');
   const canvas = document.getElementById('ctaFx');
